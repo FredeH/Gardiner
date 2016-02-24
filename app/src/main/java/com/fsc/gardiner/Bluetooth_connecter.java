@@ -86,3 +86,5 @@ public class Bluetooth_connecter extends AppCompatActivity {
                 };
 
     }
+
+//plz virk
