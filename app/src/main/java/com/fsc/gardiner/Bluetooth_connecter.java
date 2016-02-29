@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView;
@@ -27,6 +28,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
 
     Button btnConnect;
     ListView devicelist;
+    Switch bluetoothswitch;
 
     private BluetoothAdapter myBluetooth = null;
     private Set<BluetoothDevice> connectedDevices;
@@ -44,6 +46,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
 
         btnConnect = (Button) findViewById(R.id.button3);
         devicelist = (ListView) findViewById(R.id.listView);
+        bluetoothswitch = (Switch) findViewById(R.id.switch1);
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +78,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
     private AdapterView.OnItemClickListener myListClickListener = new
             AdapterView.OnClickListener()
             {
-                public void onItemClick (AdapterView<?> av, View v, int arg2, long arg3) {
+                public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
                     String info = ((TextView) v).getText().toString();
                     String adress = info.substring(info.length() - 17);
 
