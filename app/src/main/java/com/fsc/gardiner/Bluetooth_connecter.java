@@ -3,25 +3,21 @@ package com.fsc.gardiner;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView;
-import android.view.View.OnClickListener;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-
-import android.content.Intent;
-
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class Bluetooth_connecter extends AppCompatActivity {
@@ -32,15 +28,15 @@ public class Bluetooth_connecter extends AppCompatActivity {
 
     private BluetoothAdapter myBluetooth = null;
     private Set<BluetoothDevice> connectedDevices;
-    private OutputStream outputStream = null;
-    public static String EXSTRA_ADRESS = "device_adress";
+    public static String EXSTRA_ADDRESS = "device_address";
 
 
 
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_connecter);
 
@@ -48,9 +44,24 @@ public class Bluetooth_connecter extends AppCompatActivity {
         devicelist = (ListView) findViewById(R.id.listView);
         bluetoothswitch = (Switch) findViewById(R.id.switch1);
 
-        btnConnect.setOnClickListener(new View.OnClickListener() {
+        myBluetooth = BluetoothAdapter.getDefaultAdapter();
+
+        if(myBluetooth == null)
+        {
+            Toast.makeText(getApplicationContext(), "Ingen Bluetooth enheder fundet", Toast.LENGTH_LONG).show();
+
+            finish();
+        }
+        else if(!myBluetooth.isEnabled())
+        {
+            Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnBTon,1);
+        }
+
+        btnConnect.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
+        public void onClick(View v)
+            {
                 connectedDevicesList();
             }
         });
@@ -61,33 +72,55 @@ public class Bluetooth_connecter extends AppCompatActivity {
         connectedDevices = myBluetooth.getBondedDevices();
         ArrayList list = new ArrayList();
 
-        if (connectedDevices.size() > 0) {
-            for (BluetoothDevice bt : connectedDevices) {
+        if (connectedDevices.size() > 0)
+        {
+            for (BluetoothDevice bt : connectedDevices)
+            {
                 list.add(bt.getName() + "\n" + bt.getAddress());
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "No Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
+        } else
+        {
+            Toast.makeText(getApplicationContext(), "Ingen Bluetooth enheder fundet", Toast.LENGTH_LONG).show();
         }
-        final ArrayAdapter adapter = new
-                ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+
+        final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
         devicelist.setAdapter(adapter);
         devicelist.setOnItemClickListener(myListClickListener);
     }
 
 
     private AdapterView.OnItemClickListener myListClickListener = new
-            AdapterView.OnClickListener()
+            AdapterView.OnItemClickListener()
             {
                 public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
                     String info = ((TextView) v).getText().toString();
-                    String adress = info.substring(info.length() - 17);
+                    String address = info.substring(info.length() - 17);
 
-                    Intent i = new Intent(devicelist.this, Gardiner_main.class);
+                    Intent i = new Intent(Bluetooth_connecter.this, Gardiner_main.class);
 
-                    i.putExtra(EXSTRA_ADRESS, adress);
+                    i.putExtra(EXSTRA_ADDRESS, address);
                     startActivity(i);
                 }
             };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_gardiner_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     }
 
