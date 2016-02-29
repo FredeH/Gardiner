@@ -71,6 +71,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
         devicelist.setOnItemClickListener(myListClickListener);
     }
 
+
     private AdapterView.OnItemClickListener myListClickListener = new
             AdapterView.OnClickListener()
             {
@@ -78,13 +79,12 @@ public class Bluetooth_connecter extends AppCompatActivity {
                     String info = ((TextView) v).getText().toString();
                     String adress = info.substring(info.length() - 17);
 
-                    Intent i = new Intent(DeviceList.this, Gardiner_main.class);
+                    Intent i = new Intent(devicelist.this, Gardiner_main.class);
 
                     i.putExtra(EXSTRA_ADRESS, adress);
                     startActivity(i);
                 }
-                };
+            };
 
     }
 
-//plz virk
