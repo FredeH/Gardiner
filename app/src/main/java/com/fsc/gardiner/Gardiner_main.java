@@ -26,8 +26,7 @@ public class Gardiner_main extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
-
+        /*
         //Lille mail knap
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -39,6 +38,7 @@ public class Gardiner_main extends AppCompatActivity {
 
             }
         });
+        */
     }
 
     @Override
@@ -63,5 +63,3 @@ public class Gardiner_main extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-//sour creme and onion test test
