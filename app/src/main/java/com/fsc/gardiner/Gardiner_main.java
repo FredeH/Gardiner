@@ -2,6 +2,7 @@ package com.fsc.gardiner;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +13,14 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class Gardiner_main extends AppCompatActivity {
 
-    Button BtnOp, btnNed, btnDis;
+    Button btnOp, btnNed, btnDis;
     TextView lumn;
     String address = null;
     private ProgressDialog progress;
@@ -40,7 +42,12 @@ public class Gardiner_main extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent newint = getIntent();
-        address = newint.getStringExtra(Bluetooth_connecter.EXTRA_ADDRESS);
+        address = newint.getStringExtra(Bluetooth_connecter.EXSTRA_ADDRESS);
+
+        btnOp = (Button)findViewById(R.id.button);
+        btnNed = (Button)findViewById(R.id.button2);
+
+        new ConnectBT().execute();
 
         /*
         //Lille mail knap
@@ -55,6 +62,11 @@ public class Gardiner_main extends AppCompatActivity {
             }
         });
         */
+    }
+
+    private void txt(String t)
+    {
+        Toast.makeText(getApplicationContext(),t,Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -79,5 +91,53 @@ public class Gardiner_main extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class ConnectBT extends AsyncTask<Void, Void, Void>
+    {
+        private boolean ConnectSuccess = true;
+
+        @Override
+        protected void onPreExecute()
+        {
+            progress = ProgressDialog.show(Gardiner_main.this, "Connecting", "Please wait");
+        }
+
+        @Override
+        protected Void doInBackground(Void... devices)
+        {
+            try
+            {
+                if (btSocket == null || !isBtConnected)
+                {
+                    myBluetooth = BluetoothAdapter.getDefaultAdapter();
+                    BluetoothDevice negative = myBluetooth.getRemoteDevice(address);
+                    btSocket = negative.createInsecureRfcommSocketToServiceRecord(myUUID);
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                    btSocket.connect();
+                }
+            }
+            catch (IOException e)
+            {
+                ConnectSuccess = false;
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            super.onPostExecute(result);
+            if (!ConnectSuccess)
+            {
+                txt("Connection failed");
+                finish();
+            }
+            else
+            {
+                txt("Connected");
+                isBtConnected = true;
+            }
+            progress.dismiss();
+        }
     }
 }
