@@ -1,5 +1,6 @@
 package com.fsc.gardiner;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,20 +9,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.os.AsyncTask;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class Gardiner_main extends AppCompatActivity {
 
-    Button btnOp, btnNed, btnDis;
-    TextView lumn;
+    /*
+    Button btnOp, btnNed;
     String address = null;
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth = null;
@@ -30,6 +35,10 @@ public class Gardiner_main extends AppCompatActivity {
     //SPP UUID. Look for it
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
+    */
+
+    private ViewFlipper viewFlipper;
+    private float lastX;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,9 +46,12 @@ public class Gardiner_main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_gardiner_main);
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         Intent newint = getIntent();
         address = newint.getStringExtra(Bluetooth_connecter.EXSTRA_ADDRESS);
@@ -64,10 +76,64 @@ public class Gardiner_main extends AppCompatActivity {
         */
     }
 
+    public boolean onTouchEvent(MotionEvent touchevent)
+    {
+        switch (touchevent.getAction())
+        {
+            // when user first touches the screen to swap
+            case MotionEvent.ACTION_DOWN:
+            {
+                lastX = touchevent.getX();
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+            {
+                float currentX = touchevent.getX();
+
+                // if left to right swipe on screen
+                if (lastX < currentX)
+                {
+                    // If no more View/Child to flip
+                    if (viewFlipper.getDisplayedChild() == 0)
+                        break;
+
+                    // set the required Animation type to ViewFlipper
+                    // The Next screen will come in form Left and current Screen will go OUT from Right
+                    viewFlipper.setInAnimation(this, R.anim.in_from_left);
+                    viewFlipper.setOutAnimation(this, R.anim.out_to_right);
+                    // Show the next Screen
+                    viewFlipper.showNext();
+                }
+
+                // if right to left swipe on screen
+                if (lastX > currentX)
+                {
+                    if (viewFlipper.getDisplayedChild() == 1)
+                        break;
+                    // set the required Animation type to ViewFlipper
+                    // The Next screen will come in form Right and current Screen will go OUT from Left
+                    viewFlipper.setInAnimation(this, R.anim.in_from_right);
+                    viewFlipper.setOutAnimation(this, R.anim.out_to_left);
+                    // Show The Previous Screen
+                    viewFlipper.showPrevious();
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+}
+
+
+    /*
+
     private void txt(String t)
     {
         Toast.makeText(getApplicationContext(),t,Toast.LENGTH_LONG).show();
     }
+
+    /*
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -92,6 +158,9 @@ public class Gardiner_main extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
+
+    /*
 
     private class ConnectBT extends AsyncTask<Void, Void, Void>
     {
@@ -140,4 +209,5 @@ public class Gardiner_main extends AppCompatActivity {
             progress.dismiss();
         }
     }
-}
+    */
+// }

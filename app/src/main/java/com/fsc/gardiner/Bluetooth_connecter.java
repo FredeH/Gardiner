@@ -27,7 +27,6 @@ public class Bluetooth_connecter extends AppCompatActivity {
     Switch bluetoothswitch;
 
     private BluetoothAdapter myBluetooth = null;
-    private Set<BluetoothDevice> connectedDevices;
     public static String EXSTRA_ADDRESS = "device_address";
 
 
@@ -69,8 +68,8 @@ public class Bluetooth_connecter extends AppCompatActivity {
     }
 
     private void connectedDevicesList() {
-        connectedDevices = myBluetooth.getBondedDevices();
-        ArrayList list = new ArrayList();
+        Set<BluetoothDevice> connectedDevices = myBluetooth.getBondedDevices();
+        ArrayList<String> list = new ArrayList<>();
 
         if (connectedDevices.size() > 0)
         {
@@ -83,14 +82,13 @@ public class Bluetooth_connecter extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Ingen Bluetooth enheder fundet", Toast.LENGTH_LONG).show();
         }
 
-        final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
         devicelist.setAdapter(adapter);
         devicelist.setOnItemClickListener(myListClickListener);
     }
 
 
-    private AdapterView.OnItemClickListener myListClickListener = new
-            AdapterView.OnItemClickListener()
+    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener()
             {
                 public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
                     String info = ((TextView) v).getText().toString();
@@ -111,15 +109,11 @@ public class Bluetooth_connecter extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     }
