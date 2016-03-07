@@ -1,213 +1,133 @@
 package com.fsc.gardiner;
 
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.os.AsyncTask;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.UUID;
+public class Gardiner_main extends FragmentActivity implements ActionBar.TabListener {
 
-public class Gardiner_main extends AppCompatActivity {
 
-    /*
-    Button btnOp, btnNed;
-    String address = null;
-    private ProgressDialog progress;
-    BluetoothAdapter myBluetooth = null;
-    BluetoothSocket btSocket = null;
-    private boolean isBtConnected = false;
-    //SPP UUID. Look for it
-    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    AppSectionsPagerAdapter mAppSectionsPagerAdapter;
 
-    */
+    ViewPager mViewPager;
 
-    private ViewFlipper viewFlipper;
-    private float lastX;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.gardiner_main);
 
-        setContentView(R.layout.activity_gardiner_main);
-        viewFlipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getActionBar();
 
-        /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-        Intent newint = getIntent();
-        address = newint.getStringExtra(Bluetooth_connecter.EXSTRA_ADDRESS);
-
-        btnOp = (Button)findViewById(R.id.button);
-        btnNed = (Button)findViewById(R.id.button2);
-
-        new ConnectBT().execute();
-
-        /*
-        //Lille mail knap
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+            public void onPageSelected(int position) {
+                // When swiping between different app sections, select the corresponding tab.
+                // We can also use ActionBar.Tab#select() to do this if we have a reference to the
+                // Tab.
+                //actionBar.setSelectedNavigationItem(position);
+                invalidateOptionsMenu();
             }
         });
-        */
-    }
 
-    public boolean onTouchEvent(MotionEvent touchevent)
-    {
-        switch (touchevent.getAction())
-        {
-            // when user first touches the screen to swap
-            case MotionEvent.ACTION_DOWN:
-            {
-                lastX = touchevent.getX();
-                break;
-            }
-            case MotionEvent.ACTION_UP:
-            {
-                float currentX = touchevent.getX();
 
-                // if left to right swipe on screen
-                if (lastX < currentX)
-                {
-                    // If no more View/Child to flip
-                    if (viewFlipper.getDisplayedChild() == 0)
-                        break;
-
-                    // set the required Animation type to ViewFlipper
-                    // The Next screen will come in form Left and current Screen will go OUT from Right
-                    viewFlipper.setInAnimation(this, R.anim.in_from_left);
-                    viewFlipper.setOutAnimation(this, R.anim.out_to_right);
-                    // Show the next Screen
-                    viewFlipper.showNext();
-                }
-
-                // if right to left swipe on screen
-                if (lastX > currentX)
-                {
-                    if (viewFlipper.getDisplayedChild() == 1)
-                        break;
-                    // set the required Animation type to ViewFlipper
-                    // The Next screen will come in form Right and current Screen will go OUT from Left
-                    viewFlipper.setInAnimation(this, R.anim.in_from_right);
-                    viewFlipper.setOutAnimation(this, R.anim.out_to_left);
-                    // Show The Previous Screen
-                    viewFlipper.showPrevious();
-                }
-                break;
+        for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+            // Create a tab with text corresponding to the page title defined by the adapter.
+            // Also specify this Activity object, which implements the TabListener interface, as the
+            // listener for when this tab is selected.
+            if (actionBar != null) {
+                actionBar.addTab(
+                        actionBar.newTab()
+                                .setText(mAppSectionsPagerAdapter.getPageTitle(i))
+                                .setTabListener(this));
             }
         }
-        return false;
     }
 
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+
+
+    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public AppSectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    // The first section of the app is the most interesting -- it offers
+                    // a launchpad into the other demonstrations in this example application.
+                    return new ForsideFragment();
+
+                default:
+                    // The other sections of the app are dummy placeholders.
+                    Fragment fragment = new DummySectionFragment();
+                 //   Bundle args = new Bundle();
+                 //   args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
+                 //   fragment.setArguments(args);
+                    return fragment;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+    }
+
+    public static class ForsideFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.content_gardiner_main, container, false);
+
+
+            return rootView;
+        }
+    }
+
+    public static class DummySectionFragment extends Fragment {
+
+        //public static final String ARG_SECTION_NUMBER = "section_number";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_bluetooth_connecter, container, false);
+            return rootView;
+        }
+    }
 }
 
-
-    /*
-
-    private void txt(String t)
-    {
-        Toast.makeText(getApplicationContext(),t,Toast.LENGTH_LONG).show();
-    }
-
-    /*
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_gardiner_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
-    /*
-
-    private class ConnectBT extends AsyncTask<Void, Void, Void>
-    {
-        private boolean ConnectSuccess = true;
-
-        @Override
-        protected void onPreExecute()
-        {
-            progress = ProgressDialog.show(Gardiner_main.this, "Connecting", "Please wait");
-        }
-
-        @Override
-        protected Void doInBackground(Void... devices)
-        {
-            try
-            {
-                if (btSocket == null || !isBtConnected)
-                {
-                    myBluetooth = BluetoothAdapter.getDefaultAdapter();
-                    BluetoothDevice negative = myBluetooth.getRemoteDevice(address);
-                    btSocket = negative.createInsecureRfcommSocketToServiceRecord(myUUID);
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();
-                }
-            }
-            catch (IOException e)
-            {
-                ConnectSuccess = false;
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void result)
-        {
-            super.onPostExecute(result);
-            if (!ConnectSuccess)
-            {
-                txt("Connection failed");
-                finish();
-            }
-            else
-            {
-                txt("Connected");
-                isBtConnected = true;
-            }
-            progress.dismiss();
-        }
-    }
-    */
-// }
