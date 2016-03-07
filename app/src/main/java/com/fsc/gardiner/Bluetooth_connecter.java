@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -45,9 +46,26 @@ public class Bluetooth_connecter extends AppCompatActivity {
 
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
 
+        bluetoothswitch.setChecked(true);
+        bluetoothswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    myBluetooth.enable();
+                }
+                else
+                {
+                    myBluetooth.disable();
+                }
+            }
+        });
+/*
+        @Override
+
         if(myBluetooth == null)
         {
-            Toast.makeText(getApplicationContext(), "Ingen Bluetooth enheder fundet", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Bluetooth blev ikke fundet på enheden", Toast.LENGTH_LONG).show();
 
             finish();
         }
@@ -64,7 +82,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
                 connectedDevicesList();
             }
         });
-
+*/
     }
 
     private void connectedDevicesList() {
