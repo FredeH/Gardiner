@@ -1,5 +1,7 @@
 package com.fsc.gardiner;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -21,16 +23,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class Bluetooth_connecter extends AppCompatActivity {
+public class Bluetooth_connecter extends FragmentActivity
+{
 
     Button btnConnect;
     ListView devicelist;
     Switch bluetoothswitch;
 
     private BluetoothAdapter myBluetooth = null;
-    public static String EXSTRA_ADDRESS = "device_address";
-
-
+    // public static String EXSTRA_ADDRESS = "device_address";
 
 
 
@@ -46,20 +47,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
 
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
 
-        bluetoothswitch.setChecked(true);
-        bluetoothswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                {
-                    myBluetooth.enable();
-                }
-                else
-                {
-                    myBluetooth.disable();
-                }
-            }
-        });
+
 /*
         @Override
 
@@ -85,6 +73,28 @@ public class Bluetooth_connecter extends AppCompatActivity {
 */
     }
 
+    public void bluetooth_switch()
+    {
+        bluetoothswitch.setChecked(true);
+        bluetoothswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    myBluetooth.enable();
+                }
+                else
+                {
+                    myBluetooth.disable();
+                }
+            }
+        });
+    }
+
+
+    }
+
+    /*
     private void connectedDevicesList() {
         Set<BluetoothDevice> connectedDevices = myBluetooth.getBondedDevices();
         ArrayList<String> list = new ArrayList<>();
@@ -119,6 +129,8 @@ public class Bluetooth_connecter extends AppCompatActivity {
                 }
             };
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -133,6 +145,7 @@ public class Bluetooth_connecter extends AppCompatActivity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
     }
+    */
 
-    }
+
 
