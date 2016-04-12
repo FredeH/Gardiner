@@ -3,6 +3,9 @@ package com.fsc.gardiner;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,10 +16,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class Gardiner_main extends FragmentActivity implements ActionBar.TabListener {
 
@@ -24,8 +34,16 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
 
     ViewPager mViewPager;
+    private static Switch BTswitch;
+    private static Button BTconnect;
+    private static ListView devicelist;
+    private static Set<BluetoothDevice>pairedDevices;
+    private static Context context;
+    private ArrayAdapter<String> BTArrayAdapter;
 
-    Switch bluetoothswitch;
+
+
+    public static BluetoothAdapter myBluetooth;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +51,11 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
 
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
-        final ActionBar actionBar = getActionBar();
+        myBluetooth = BluetoothAdapter.getDefaultAdapter();
+
+        Gardiner_main.context = getApplicationContext();
+
+        //final ActionBar actionBar = getActionBar();
 
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -78,7 +100,6 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
     }
 
 
-
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
         public AppSectionsPagerAdapter(FragmentManager fm) {
@@ -94,12 +115,8 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
                     return new ForsideFragment();
 
                 case 1:
-                    // The other sections of the app are dummy placeholders.
-                 //   Fragment fragment = new DummySectionFragment();
-                 //   Bundle args = new Bundle();
-                 //   args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
-                 //   fragment.setArguments(args);
-                    return new DummySectionFragment();
+                    //Vis BluetoothFragment efter swipe
+                    return new BluetoothFragment();
             }
             return null;
         }
@@ -126,7 +143,7 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
 
     }
 
-    public static class DummySectionFragment extends Fragment {
+    public static class BluetoothFragment extends Fragment {
 
         //public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -134,14 +151,42 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.activity_bluetooth_connecter, container, false);
 
+            devicelist = (ListView)rootView.findViewById(R.id.listView);
+
+
+
             return rootView;
 
         }
 
-        public void onViewCreated(View rootView, Bundle savedInstanceState){
+        public static Context getAppContext() {
+            return Gardiner_main.context;
+        }
 
-        Bluetooth_connecter myBluetooth_connecter = new Bluetooth_connecter();
-        myBluetooth_connecter.bluetooth_switch();
+
+
+
+        public void onViewCreated(final View rootView, Bundle savedInstanceState){
+
+            BTconnect = (Button)rootView.findViewById(R.id.button3);
+            BTconnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            BTswitch = (Switch)rootView.findViewById(R.id.switch1);
+            BTswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton rootView, boolean isChecked) {
+                    if (isChecked) {
+                        myBluetooth.enable();
+                    } else {
+                        myBluetooth.disable();
+                    }
+                }
+            });
         }
 
 

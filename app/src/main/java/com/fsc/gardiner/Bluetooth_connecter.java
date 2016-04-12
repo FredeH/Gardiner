@@ -73,6 +73,7 @@ public class Bluetooth_connecter extends FragmentActivity
 */
     }
 
+/*
     public void bluetooth_switch()
     {
         bluetoothswitch.setChecked(true);
@@ -90,7 +91,7 @@ public class Bluetooth_connecter extends FragmentActivity
             }
         });
     }
-
+*/
 
     }
 
