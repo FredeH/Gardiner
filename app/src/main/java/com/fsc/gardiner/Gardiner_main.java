@@ -237,8 +237,9 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
                 String info = ((TextView) v).getText().toString();
                 String address = info.substring(info.length() - 17);
                 // Create the result Intent and include the MAC address
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+                //Intent intent = new Intent();
+                //intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+                Connect();
                 // Set result and finish this Activity
                 getActivity().finish();
 
@@ -259,10 +260,6 @@ public class Gardiner_main extends FragmentActivity implements ActionBar.TabList
 
             Toast.makeText(getAppContext(),"Vis stuff", Toast.LENGTH_LONG).show();
         }
-
-
-
-
 
         public void onViewCreated(final View rootView, Bundle savedInstanceState){
 
